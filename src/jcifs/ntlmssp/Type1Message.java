@@ -44,6 +44,7 @@ public class Type1Message extends NtlmMessage {
 
     static {
         DEFAULT_FLAGS = NTLMSSP_NEGOTIATE_NTLM |
+                NTLMSSP_NEGOTIATE_NTLM2 |
                 (Config.getBoolean("jcifs.smb.client.useUnicode", true) ?
                         NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM);
         DEFAULT_DOMAIN = Config.getProperty("jcifs.smb.client.domain", null);
