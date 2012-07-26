@@ -520,6 +520,7 @@ public class Type3Message extends NtlmMessage {
         int flags = NTLMSSP_NEGOTIATE_NTLM;
         flags |= ((type2.getFlags() & NTLMSSP_NEGOTIATE_UNICODE) != 0) ?
                 NTLMSSP_NEGOTIATE_UNICODE : NTLMSSP_NEGOTIATE_OEM;
+        flags |= NTLMSSP_NEGOTIATE_NTLM2 & type2.getFlags();
         return flags;
     }
 
