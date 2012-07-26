@@ -115,11 +115,14 @@ public abstract class NtlmMessage implements NtlmFlags {
     static void writeSecurityBuffer(byte[] dest, int offset, int bodyOffset,
             byte[] src) {
         int length = (src != null) ? src.length : 0;
-        if (length == 0) return;
         writeUShort(dest, offset, length);
         writeUShort(dest, offset + 2, length);
-        writeULong(dest, offset + 4, bodyOffset);
-        System.arraycopy(src, 0, dest, bodyOffset, length);
+        if (length > 0) {
+            writeULong(dest, offset + 4, bodyOffset);
+            System.arraycopy(src, 0, dest, bodyOffset, length);
+        } else {
+            writeULong(dest, offset + 4, 0);
+        }
     }
 
     static String getOEMEncoding() {
