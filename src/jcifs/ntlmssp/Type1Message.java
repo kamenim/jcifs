@@ -130,10 +130,8 @@ public class Type1Message extends NtlmMessage {
             String suppliedDomain = getSuppliedDomain();
             String suppliedWorkstation = getSuppliedWorkstation();
             int flags = getFlags();
-            boolean hostInfo = false;
             byte[] domain = new byte[0];
             if (suppliedDomain != null && suppliedDomain.length() != 0) {
-                hostInfo = true;
                 flags |= NTLMSSP_NEGOTIATE_OEM_DOMAIN_SUPPLIED;
                 domain = suppliedDomain.toUpperCase().getBytes(
                         getOEMEncoding());
@@ -143,7 +141,6 @@ public class Type1Message extends NtlmMessage {
             byte[] workstation = new byte[0];
             if (suppliedWorkstation != null &&
                     suppliedWorkstation.length() != 0) {
-                hostInfo = true;
                 flags |= NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED;
                 workstation =
                         suppliedWorkstation.toUpperCase().getBytes(
@@ -152,15 +149,12 @@ public class Type1Message extends NtlmMessage {
                 flags &= (NTLMSSP_NEGOTIATE_OEM_WORKSTATION_SUPPLIED ^
                         0xffffffff);
             }
-            byte[] type1 = new byte[hostInfo ?
-                    (32 + domain.length + workstation.length) : 16];
+            byte[] type1 = new byte[32 + domain.length + workstation.length + 8];
             System.arraycopy(NTLMSSP_SIGNATURE, 0, type1, 0, 8);
             writeULong(type1, 8, 1);
             writeULong(type1, 12, flags);
-            if (hostInfo) {
-                writeSecurityBuffer(type1, 16, 32, domain);
-                writeSecurityBuffer(type1, 24, 32 + domain.length, workstation);
-            }
+            writeSecurityBuffer(type1, 16, 32, domain);
+            writeSecurityBuffer(type1, 24, 32 + domain.length, workstation);
             return type1;
         } catch (IOException ex) {
             throw new IllegalStateException(ex.getMessage());
